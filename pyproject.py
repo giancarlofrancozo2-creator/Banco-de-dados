@@ -1,7 +1,12 @@
+"""
+Sistema de Avaliação de Filmes - Casa dos Filmes
+Desenvolvido para gerenciar usuários, filmes e avaliações usando SQLAlchemy e SQLite.
+"""
+
 from sqlalchemy import create_engine, Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship, validates
 
-
+#Config do db
 db = create_engine ("sqlite:///casadados.db")
 Sessao = sessionmaker(bind=db)
 sessao = Sessao()
