@@ -66,7 +66,7 @@ if opcao == '1':
             print(f'Login bem-sucedido! Bem-vindo, {usuario_logado.nome}!')
         else:
             print('Email ou senha incorretos. Tente novamente.')
-            exit()
+        exit()
   
 elif opcao == '2': 
     print ('---Registro de novo usuário---')
@@ -80,7 +80,7 @@ elif opcao == '2':
     try:
         sessao.commit()
         print('Usuário registrado com sucesso! Faça login para continuar.')
-        exit()
+        usuario_logado = novo_usuario
     except Exception as e:
         sessao.rollback()
         print(f'Erro email já registrado. Tente novamente.')
@@ -110,7 +110,7 @@ if usuario_logado:
             print('Filme adicionado com sucesso! Agora você pode avaliá-lo.')
         elif resposta == 'n':
             print('Operação cancelada. Volte para o menu principal.')
-            exit()
+            filme = None
 #registro de avaliação
 print('---Registrar Avaliação---')
 deseja_avaliar = input('Deseja avaliar este filme? (s/n): ').lower()
@@ -126,11 +126,15 @@ elif deseja_avaliar == 'n':
     exit()
 
 #busca de avaliações
-print('---Buscar Avaliações de um Filme---')
-buscar_filme = input('Digite o título do filme para buscar avaliações: ').lower()
-
-filme_buscado = sessao.query(Filme).filter_by(titulo=buscar_filme).first()
-print(f'---Avaliações para "{filme_buscado.titulo}"---')
-for avaliacao in filme_buscado.avaliacoes:
-    print(f'Usuário: {avaliacao.usuario.nome}, Nota: {avaliacao.nota}, Comentário: {avaliacao.comentario}')
-   
+if usuario_logado:
+    print('---Buscar Avaliações de um Filme---')
+    buscar = input('Deseja buscar avaliações de um filme? (s/n): ').lower()
+    if buscar == 's':
+        buscar_filme = input('Digite o título do filme para buscar avaliações: ').lower()
+        filme_buscado = sessao.query(Filme).filter_by(titulo=buscar_filme).first()
+        if filme_buscado:
+            print(f'---Avaliações para "{filme_buscado.titulo}"---')
+            for avaliacao in filme_buscado.avaliacoes:
+                print(f'Usuário: {avaliacao.usuario.nome}, Nota: {avaliacao.nota}, Comentário: {avaliacao.comentario}')
+        else:
+            print('Filme não encontrado.')
